@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Home from "./page";
-import { fetchFormGraph } from "./hooks/fetchFormGraph";
+import { FetchFormGraph } from "./hooks/fetchFormGraph";
 
 jest.mock("./hooks/fetchFormGraph");
 
@@ -15,10 +15,6 @@ const mockGraph = {
         { id: "email", name: "Email", type: "text" },
         { id: "name", name: "Name", type: "text" },
       ],
-      field_schema: {
-        email: { type: "text", required: true },
-        name: { type: "text", required: false },
-      },
     },
     formB: {
       id: "formB",
@@ -27,10 +23,6 @@ const mockGraph = {
         { id: "address", name: "Address", type: "text" },
         { id: "phone", name: "Phone", type: "text" },
       ],
-      field_schema: {
-        address: { type: "text", required: true },
-        phone: { type: "text", required: false },
-      },
     },
   },
 };
@@ -40,8 +32,8 @@ describe("Home Component", () => {
     jest.clearAllMocks();
   });
 
-  it("renders loading state initially", () => {
-    (fetchFormGraph as jest.Mock).mockReturnValue({
+  it("should render loading state initially", () => {
+    (FetchFormGraph as jest.Mock).mockReturnValue({
       graph: null,
       loading: true,
       error: null,
@@ -51,8 +43,8 @@ describe("Home Component", () => {
     expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 
-  it("renders error state if fetch fails", () => {
-    (fetchFormGraph as jest.Mock).mockReturnValue({
+  it("should render error state if fetch fails", () => {
+    (FetchFormGraph as jest.Mock).mockReturnValue({
       graph: null,
       loading: false,
       error: { message: "Failed to load graph" },
@@ -62,8 +54,8 @@ describe("Home Component", () => {
     expect(screen.getByText("Error loading graph: Failed to load graph")).toBeInTheDocument();
   });
 
-  it("renders form list when data is loaded", () => {
-    (fetchFormGraph as jest.Mock).mockReturnValue({
+  it("should render form list when data is loaded", () => {
+    (FetchFormGraph as jest.Mock).mockReturnValue({
       graph: mockGraph,
       loading: false,
       error: null,
@@ -74,20 +66,20 @@ describe("Home Component", () => {
     expect(screen.getByText("Form B")).toBeInTheDocument();
   });
 
-  it("updates selected form when a form is clicked", () => {
-    (fetchFormGraph as jest.Mock).mockReturnValue({
+  it("should update selected form when a form is clicked", () => {
+    (FetchFormGraph as jest.Mock).mockReturnValue({
       graph: mockGraph,
       loading: false,
       error: null,
     });
 
     render(<Home />);
-    fireEvent.click(screen.getByText("Form A"));
-    expect(screen.getByText("Form A")).toBeInTheDocument();
+    fireEvent.click(screen.getAllByText("Form A")[0]);
+    expect(screen.getAllByText("Form A")[0]).toBeInTheDocument();
   });
 
-  it("updates form values and propagates changes to dependent forms", () => {
-    (fetchFormGraph as jest.Mock).mockReturnValue({
+  it("should update form values and propagates changes to dependent forms", () => {
+    (FetchFormGraph as jest.Mock).mockReturnValue({
       graph: mockGraph,
       loading: false,
       error: null,
@@ -96,7 +88,7 @@ describe("Home Component", () => {
     const { getByText } = render(<Home />);
     fireEvent.click(getByText("Form A"));
 
-    const emailInput = screen.getByLabelText("email");
+    const emailInput = screen.getByPlaceholderText("email");
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
 
     expect(emailInput).toHaveValue("test@example.com");

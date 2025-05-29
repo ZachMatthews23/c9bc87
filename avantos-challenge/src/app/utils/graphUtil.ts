@@ -1,8 +1,9 @@
-import { FormGraph } from '../types/model';
+import { FormGraph } from '@/app/types/model';
 
 // Utility functions for managing form dependencies and values in a graph structure
 
 export const findFormById = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   nodes: { id: string; data: { name: string }; [key: string]: any }[],
   id: string
 ) => {

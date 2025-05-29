@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
-import { formFields, FormGraph, PrefillMapping } from '../../types/model';
+import { formFields, FormGraph, GlobalData, PrefillMapping } from '@/app/types/model';
 import { getDependencyForms } from '@/app/utils/graphUtil';
 
 type PrefillModalProps = {
-  fieldId: string;
   formId: string;
   onClose: () => void;
   onSave: (prefill: PrefillMapping | null) => void;
   formGraph: FormGraph;
+  globalData: GlobalData;
 };
 
-const PrefillModal: React.FC<PrefillModalProps> = ({ fieldId, formId, onClose, onSave, formGraph }) => {
+const PrefillModal: React.FC<PrefillModalProps> = ({ formId, onClose, onSave, formGraph, globalData }) => {
   const [search, setSearch] = useState('');
   const [expandedFormId, setExpandedFormId] = useState<string | null>(null);
   const [selectedPrefill, setSelectedPrefill] = useState<PrefillMapping | null>(null);
 
-  // Use the utility function to compute dependency forms
   const dependencyForms = getDependencyForms(formId, formGraph);
 
   const handleFormClick = (formId: string) => {
@@ -42,9 +41,51 @@ const PrefillModal: React.FC<PrefillModalProps> = ({ fieldId, formId, onClose, o
         />
 
         <div style={styles.treeContainer}>
+          {/* Render Global Data */}
+          <div>
+            <div
+              style={{
+                ...styles.formHeader,
+                backgroundColor: expandedFormId === globalData.id ? '#eee' : 'transparent',
+              }}
+              onClick={() => handleFormClick(globalData.id)}
+            >
+              {expandedFormId === globalData.id ? '▾' : '▸'} {globalData.data.name}
+            </div>
+            {expandedFormId === globalData.id && (
+              <ul style={styles.fieldList}>
+                {globalData.fields
+                  .filter((field) =>
+                    field.name.toLowerCase().includes(search.toLowerCase())
+                  )
+                  .map((field) => (
+                    <li
+                      key={field.id}
+                      style={{
+                        ...styles.fieldItem,
+                        backgroundColor:
+                          selectedPrefill?.sourceFormId === globalData.id &&
+                          selectedPrefill?.sourceFieldId === field.id
+                            ? '#d0eaff'
+                            : 'transparent',
+                      }}
+                      onClick={() =>
+                        setSelectedPrefill({
+                          sourceFormId: globalData.id,
+                          sourceFieldId: field.id,
+                        })
+                      }
+                    >
+                      {field.name}
+                    </li>
+                  ))}
+              </ul>
+            )}
+          </div>
+          {/* Render Dependency Forms */}
           {dependencyForms.map((form) => {
             const fields = formFields.filter(field =>
-              field.placeholder.toLowerCase().includes(search.toLowerCase())
+              field.name.toLowerCase().includes(search.toLowerCase())
             );
 
             return (
@@ -62,23 +103,23 @@ const PrefillModal: React.FC<PrefillModalProps> = ({ fieldId, formId, onClose, o
                   <ul style={styles.fieldList}>
                     {fields.map((field) => (
                       <li
-                        key={field.placeholder}
+                        key={field.name}
                         style={{
                           ...styles.fieldItem,
                           backgroundColor:
                             selectedPrefill?.sourceFormId === form.id &&
-                            selectedPrefill?.sourceFieldId === field.placeholder
+                            selectedPrefill?.sourceFieldId === field.name
                               ? '#d0eaff'
                               : 'transparent',
                         }}
                         onClick={() =>
                           setSelectedPrefill({
                             sourceFormId: form.id,
-                            sourceFieldId: field.placeholder,
+                            sourceFieldId: field.name,
                           })
                         }
                       >
-                        {field.placeholder}
+                        {field.name}
                       </li>
                     ))}
                   </ul>

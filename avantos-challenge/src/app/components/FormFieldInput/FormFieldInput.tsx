@@ -13,16 +13,8 @@ const FormFieldInput: React.FC<FormFieldInputProps> = ({
   placeholder,
   value,
   onChange,
-  onClick
+  onClick = () => {},
 }) => {
-  // Handle clearing the input value
-  const handleClear = () => {
-    const event = {
-      target: { value: "" },
-    } as React.ChangeEvent<HTMLInputElement>;
-    onChange(event);
-  };
-
   return (
     <div style={styles.container}>
       <input
@@ -34,7 +26,11 @@ const FormFieldInput: React.FC<FormFieldInputProps> = ({
         style={styles.input}
       />
       {type === "email" && (
-        <button type="button" onClick={handleClear} style={styles.clearButton}>
+        <button
+          type="button"
+          onClick={() => onChange({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>)}
+          style={styles.clearButton}
+        >
           Clear
         </button>
       )}

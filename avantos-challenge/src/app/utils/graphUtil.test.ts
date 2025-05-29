@@ -1,4 +1,5 @@
-import { findFormById, propagateEmailToDependents } from './graphUtil';
+import { FormGraph } from '@/app/types/model';
+import { findFormById, getFormDependencies, propagateEmailToDependents } from './graphUtil';
 
 describe('graphUtil', () => {
   describe('findFormById', () => {
@@ -21,7 +22,7 @@ describe('graphUtil', () => {
     });
 
     it('should handle an empty nodes array', () => {
-      const nodes: any[] = [];
+      const nodes = [] as { id: string; data: { name: string } }[];
       const result = findFormById(nodes, '1');
       expect(result).toBeNull();
     });
@@ -37,10 +38,9 @@ describe('graphUtil', () => {
         '2': { email: 'old@example.com' },
         '3': { email: 'old@example.com' },
       };
-      const formId = '1';
       const value = 'new@example.com';
 
-      propagateEmailToDependents(dependencies, updatedValues, formId, value);
+      propagateEmailToDependents(dependencies, updatedValues, value);
 
       expect(updatedValues['2'].email).toBe('new@example.com');
       expect(updatedValues['3'].email).toBe('new@example.com');
@@ -55,10 +55,9 @@ describe('graphUtil', () => {
         '2': { email: 'old@example.com' },
         '3': { email: 'old@example.com' },
       };
-      const formId = '1';
       const value = 'new@example.com';
 
-      propagateEmailToDependents(dependencies, updatedValues, formId, value);
+      propagateEmailToDependents(dependencies, updatedValues, value);
 
       expect(updatedValues['2'].email).toBe('old@example.com');
       expect(updatedValues['3'].email).toBe('old@example.com');
@@ -67,12 +66,37 @@ describe('graphUtil', () => {
     it('should handle empty dependencies object', () => {
       const dependencies: { [key: string]: string[] } = {};
       const updatedValues: { [formId: string]: { [field: string]: string } } = {};
-      const formId = '1';
       const value = 'new@example.com';
 
-      propagateEmailToDependents(dependencies, updatedValues, formId, value);
+      propagateEmailToDependents(dependencies, updatedValues, value);
 
       expect(updatedValues).toEqual({});
+    });
+  });
+
+  describe('getFormDependencies', () => {
+    it('should return all dependencies for a given form', () => {
+      const formGraph = {
+        nodes: {
+          '1': { id: '1', data: { name: 'Form A', prerequisites: ['2'] } },
+          '2': { id: '2', data: { name: 'Form B', prerequisites: [] } },
+          '3': { id: '3', data: { name: 'Form C', prerequisites: ['1'] } },
+        },
+        edges: [],
+      } as unknown as FormGraph;
+      const result = getFormDependencies('1', formGraph);
+      expect(result).toEqual(['2']);
+    });
+
+    it('should return an empty array for forms with no dependencies', () => {
+      const formGraph = {
+        nodes: {
+          '1': { id: '1', data: { name: 'Form A', prerequisites: [] } },
+        },
+        edges: [],
+      } as unknown as FormGraph;
+      const result = getFormDependencies('1', formGraph);
+      expect(result).toEqual([]);
     });
   });
 });

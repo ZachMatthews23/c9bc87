@@ -1,5 +1,5 @@
 import React from "react";
-import { Form } from "../../types/model"
+import { Form } from "@/app/types/model"
 
 type FormListProps = {
   forms: Form[],
@@ -32,11 +32,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     width: '50%',
     borderRight: '1px solid #ccc',
-    
-  },
-  header: {
-    fontSize: '1.5rem',
-    marginBottom: '1rem',
   },
   list: {
     listStyle: 'none',

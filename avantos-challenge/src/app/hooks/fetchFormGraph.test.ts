@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react";
-import { fetchFormGraph } from "./fetchFormGraph";
+import { FetchFormGraph } from "./fetchFormGraph";
 
 global.fetch = jest.fn();
 
@@ -15,7 +15,7 @@ describe("fetchFormGraph", () => {
       json: async () => mockGraphData,
     });
 
-    const { result } = renderHook(() => fetchFormGraph());
+    const { result } = renderHook(() => FetchFormGraph());
 
     expect(result.current.loading).toBe(true);
 
@@ -35,7 +35,7 @@ describe("fetchFormGraph", () => {
       statusText: mockErrorMessage,
     });
 
-    const { result } = renderHook(() => fetchFormGraph());
+    const { result } = renderHook(() => FetchFormGraph());
 
     expect(result.current.loading).toBe(true);
 
@@ -52,7 +52,7 @@ describe("fetchFormGraph", () => {
     const mockError = new Error("Network Error");
     (fetch as jest.Mock).mockRejectedValueOnce(mockError);
 
-    const { result } = renderHook(() => fetchFormGraph());
+    const { result } = renderHook(() => FetchFormGraph());
 
     expect(result.current.loading).toBe(true);
 

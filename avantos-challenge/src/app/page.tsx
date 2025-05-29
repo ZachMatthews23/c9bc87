@@ -2,14 +2,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { fetchFormGraph } from "./hooks/fetchFormGraph";
+import { FetchFormGraph } from "./hooks/fetchFormGraph";
 import FormList from "./components/FormList/FormList";
 import FormDetails from "./components/FormDetails/FormDetails";
-import { dependencies, FormGraph, FormIds } from "./types/model";
+import { dependencies, FormGraph, FormIds, GlobalData } from "./types/model";
 import { findFormById, propagateEmailToDependents } from "./utils/graphUtil";
 
 export default function Home() {
-  const { graph, loading, error } = fetchFormGraph();
+  const { graph, loading, error } = FetchFormGraph();
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
 
   // Centralized state for all form field values
@@ -66,7 +66,8 @@ export default function Home() {
           selectedFormValues={formValues[selectedForm.data.name] || {}}
           formValues={formValues}
           onFieldValueChange={(field, value) => handleFieldValueChange(selectedForm.id, selectedForm.data.name, field, value)} 
-          allForms={graph as FormGraph}   
+          allForms={graph as FormGraph}
+          globalData={GlobalData}  
         />
       )}
     </div>

@@ -3,6 +3,7 @@ export type Field = {
   name: string;
   prefill?: PrefillMapping | null;
   type: string;
+  value?: string;
 };
 
 export type Form = {
@@ -12,11 +13,6 @@ export type Form = {
     prerequisites?: string[];
   }
   fields: Field[];
-  field_schema: {
-    properties: {
-      [key: string]: any;
-    };
-  };
 };
 
 export type PrefillMapping = {
@@ -29,13 +25,24 @@ export type FormGraph = {
   edges: { from: string; to: string }[];
 };
 
-//Update to add more fields for selected Form
+export type GlobalData = {
+  id: string;
+  data: {
+    name: string;
+    prerequisites: string[];
+  };
+  fields: Field[];
+};
+
+//Update this const to add more fields to be displated in the form
+// Example field: { type: "number", name: "phone_number" }
 export const formFields = [
-  { type: "text", placeholder: "dynamic_checkbox_group" },
-  { type: "text", placeholder: "dynamic_object" },
-  { type: "email", placeholder: "email" },
+  { type: "text", name: "dynamic_checkbox_group" },
+  { type: "text", name: "dynamic_object" },
+  { type: "email", name: "email" },
 ];
 
+//Update dependencies here to add more forms to propagate values 
 export const dependencies: { [key: string]: string[] } = {
   "Form A": ["Form A"],
   "Form B": ["Form A"],
@@ -52,4 +59,19 @@ export const FormIds = {
   FormD: "form-0f58384c-4966-4ce6-9ec2-40b96d61f745",
   FormE: "form-e15d42df-c7c0-4819-9391-53730e6d47b3",
   FormF: "form-bad163fd-09bd-4710-ad80-245f31b797d5",
+}
+
+//Object could be converted to an array of objects to add more global data fields
+//This could include adding Action Properties and Client Organization Properties
+export const GlobalData = {
+  id: "global-data",
+  data: {
+    name: "Global Data",
+    prerequisites: [],
+  },
+  fields: [
+    { id: "global_email", name: "Global_Checkbox", type: "text", value: "Global Checkbox Value" },
+    { id: "global_checkbox", name: "Global_Text", type: "text", value: "Global Text Value" },
+    { id: "global_text", name: "Global_Email", type: "email", value: "Global Email Value" },
+  ],
 }

@@ -2,12 +2,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FormGraph } from "../types/model";
+import { FormGraph } from "@/app/types/model";
 
 //URL to reach mock server
 const MOCK_GRAPH_URL = "http://localhost:3000/api/v1/123/actions/blueprints/bp_456/graph";
 
-export const fetchFormGraph = () => {
+export const FetchFormGraph = () => {
   const [graph, setGraph] = useState<FormGraph | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
