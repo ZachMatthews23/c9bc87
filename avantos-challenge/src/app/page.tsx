@@ -5,8 +5,9 @@ import React, { useState } from "react";
 import { FetchFormGraph } from "./hooks/fetchFormGraph";
 import FormList from "./components/FormList/FormList";
 import FormDetails from "./components/FormDetails/FormDetails";
-import { dependencies, FormGraph, FormIds, GlobalData } from "./types/model";
+import { FormGraph } from "./types/model";
 import { findFormById, propagateEmailToDependents } from "./utils/graphUtil";
+import { dependencies, FormIds, GlobalData } from "./types/const";
 
 export default function Home() {
   const { graph, loading, error } = FetchFormGraph();

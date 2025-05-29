@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import FormFieldInput from "../FormFieldInput/FormFieldInput";
 import PrefillModal from "../Modal/PrefillModal";
-import { formFields, FormGraph, GlobalData, PrefillMapping } from "@/app/types/model";
+import { FormGraph, GlobalData, PrefillMapping } from "@/app/types/model";
+import { formFields } from "@/app/types/const";
 
 type FormDetailsProps = {
   allForms: FormGraph;

@@ -4,7 +4,7 @@ import FormDetails from "./FormDetails";
 import PrefillModal from "../Modal/PrefillModal";
 import { FormGraph, GlobalData } from "@/app/types/model";
 
-jest.mock("../PrefillModal/PrefillModal", () => jest.fn(() => <div data-testid="prefill-modal" />));
+jest.mock("../Modal/PrefillModal", () => jest.fn(() => <div data-testid="prefill-modal" />));
 
 const mockOnFieldValueChange = jest.fn();
 const mockForm = { id: "1", data: { name: "Form B" } };

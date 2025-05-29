@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { formFields, FormGraph, GlobalData, PrefillMapping } from '@/app/types/model';
+import { FormGraph, GlobalData, PrefillMapping } from '@/app/types/model';
 import { getDependencyForms } from '@/app/utils/graphUtil';
+import { formFields } from '@/app/types/const';
 
 type PrefillModalProps = {
   formId: string;
