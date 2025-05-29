@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { formFields, FormGraph, PrefillMapping } from '../../types/model';
+import { getDependencyForms } from '@/app/utils/graphUtil';
 
 type PrefillModalProps = {
   fieldId: string;
@@ -14,9 +15,8 @@ const PrefillModal: React.FC<PrefillModalProps> = ({ fieldId, formId, onClose, o
   const [expandedFormId, setExpandedFormId] = useState<string | null>(null);
   const [selectedPrefill, setSelectedPrefill] = useState<PrefillMapping | null>(null);
 
-  const filteredForms = Object.values(formGraph.nodes).filter(f => f.id !== formId).sort((a, b) =>
-    a.data.name.localeCompare(b.data.name)
-  );
+  // Use the utility function to compute dependency forms
+  const dependencyForms = getDependencyForms(formId, formGraph);
 
   const handleFormClick = (formId: string) => {
     setExpandedFormId(prev => (prev === formId ? null : formId));
@@ -42,23 +42,23 @@ const PrefillModal: React.FC<PrefillModalProps> = ({ fieldId, formId, onClose, o
         />
 
         <div style={styles.treeContainer}>
-          {filteredForms.map((form) => {
+          {dependencyForms.map((form) => {
             const fields = formFields.filter(field =>
-              field.type.toLowerCase().includes(search.toLowerCase())
+              field.placeholder.toLowerCase().includes(search.toLowerCase())
             );
 
             return (
-              <div key={form.id}>
+              <div key={form?.id}>
                 <div
                   style={{
                     ...styles.formHeader,
-                    backgroundColor: expandedFormId === form.id ? '#eee' : 'transparent',
+                    backgroundColor: expandedFormId === form?.id ? '#eee' : 'transparent',
                   }}
-                  onClick={() => handleFormClick(form.id)}
+                  onClick={() => handleFormClick(form?.id ?? '')}
                 >
-                  {expandedFormId === form.id ? '▾' : '▸'} {form.data.name}
+                  {expandedFormId === form?.id ? '▾' : '▸'} {form?.data.name}
                 </div>
-                {expandedFormId === form.id && (
+                {expandedFormId === form?.id && (
                   <ul style={styles.fieldList}>
                     {fields.map((field) => (
                       <li

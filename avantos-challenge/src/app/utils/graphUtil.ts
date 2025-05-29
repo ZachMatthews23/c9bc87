@@ -1,3 +1,7 @@
+import { FormGraph } from '../types/model';
+
+// Utility functions for managing form dependencies and values in a graph structure
+
 export const findFormById = (
   nodes: { id: string; data: { name: string }; [key: string]: any }[],
   id: string
@@ -18,4 +22,31 @@ export const propagateEmailToDependents = (
       };
     }
   });
+};
+
+//Used to determine form dependecies
+export const getFormDependencies = (
+  formId: string,
+  formGraph: FormGraph,
+  visited = new Set<string>()
+): string[] => {
+  const node = Object.values(formGraph.nodes).find((n) => n.id === formId);
+  if (!node || visited.has(formId)) return [];
+
+  visited.add(formId);
+
+  let deps: string[] = [];
+  for (const prereqId of node.data.prerequisites || []) {
+    deps.push(prereqId);
+    deps = deps.concat(getFormDependencies(prereqId, formGraph, visited));
+  }
+
+  return deps;
+};
+
+export const getDependencyForms = (formId: string, formGraph: FormGraph) => {
+  const dependencyIds = Array.from(new Set(getFormDependencies(formId, formGraph)));
+  return dependencyIds
+    .map((id) => Object.values(formGraph.nodes).find((n) => n.id === id))
+    .sort((a, b) => (a?.data.name ?? '').localeCompare(b?.data.name ?? ''));
 };

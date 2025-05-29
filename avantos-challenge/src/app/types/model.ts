@@ -9,6 +9,7 @@ export type Form = {
   id: string;
   data: {
     name: string;
+    prerequisites?: string[];
   }
   fields: Field[];
   field_schema: {
@@ -26,11 +27,6 @@ export type PrefillMapping = {
 export type FormGraph = {
   nodes: { [formId: string]: Form };
   edges: { from: string; to: string }[];
-  forms?: {
-    field_schema: {
-      properties: { [key: string]: any };
-    };
-  };
 };
 
 //Update to add more fields for selected Form
